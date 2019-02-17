@@ -1,8 +1,8 @@
-package com.manroid.retrofitclient.model;
+package com.manroid.retrofitclient.api;
 
-import com.manroid.retrofitclient.pojo.Country;
-import com.manroid.retrofitclient.pojo.CountryFromCode;
-import com.manroid.retrofitclient.pojo.GeoNames;
+import com.manroid.retrofitclient.result.Country;
+import com.manroid.retrofitclient.result.CountryFromCode;
+import com.manroid.retrofitclient.result.GeoNames;
 
 import java.util.List;
 

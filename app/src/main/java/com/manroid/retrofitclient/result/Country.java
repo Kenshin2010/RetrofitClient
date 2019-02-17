@@ -1,5 +1,5 @@
 
-package com.manroid.retrofitclient.pojo;
+package com.manroid.retrofitclient.result;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

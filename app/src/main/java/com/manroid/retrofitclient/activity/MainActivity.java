@@ -1,4 +1,4 @@
-package com.manroid.retrofitclient.retrofit;
+package com.manroid.retrofitclient.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import com.manroid.retrofitclient.R;
 import com.manroid.retrofitclient.constant.Constant;
-import com.manroid.retrofitclient.model.CountryApi;
-import com.manroid.retrofitclient.pojo.Country;
-import com.manroid.retrofitclient.pojo.CountryFromCode;
-import com.manroid.retrofitclient.pojo.GeoNames;
+import com.manroid.retrofitclient.api.CountryApi;
+import com.manroid.retrofitclient.result.Country;
+import com.manroid.retrofitclient.result.CountryFromCode;
+import com.manroid.retrofitclient.result.GeoNames;
 
 import java.io.File;
 import java.util.List;
@@ -33,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitOperationActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     /***
      * Variable declaration part
@@ -45,7 +45,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_country);
+        setContentView(R.layout.activity_main);
         initViews();
     }
 
@@ -128,7 +128,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                     String value="CName:"+response.body().get(i).getName()
                             +"\n Capital::"+response.body().get(i).getCapital()
                             +"\n Region::"+response.body().get(i).getSubregion();
-                    mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                    mIntent = new Intent(MainActivity.this, ResultActivity.class);
                     mIntent.putExtra("response", value);
                     startActivity(mIntent);
                 }
@@ -141,7 +141,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-                mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
                 mIntent.putExtra("response", t.getMessage());
                 startActivity(mIntent);
             }
@@ -169,7 +169,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-                mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
                 mIntent.putExtra("response", name);
                 startActivity(mIntent);
                 Log.i("RetrofitActivity", "RetrofitActivity Res::" + response.isSuccessful());
@@ -181,7 +181,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-                mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
                 mIntent.putExtra("response", t.getMessage());
                 startActivity(mIntent);
             }
@@ -208,7 +208,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                     name = name.concat(geoNames.getGeonames().get(i).getName() + "\n");
                     Log.i("RetrofitActivity", "GEONAMES Name::" + geoNames.getGeonames().get(i).getName());
                 }
-                mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
                 mIntent.putExtra("response", name);
                 startActivity(mIntent);
             }
@@ -219,7 +219,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-                mIntent = new Intent(RetrofitOperationActivity.this, ResponseActivity.class);
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
                 mIntent.putExtra("response", t.getMessage());
                 startActivity(mIntent);
             }
@@ -251,7 +251,7 @@ public class RetrofitOperationActivity extends AppCompatActivity implements View
                 Log.v("RetrofitActivity", "Upload Res is::"
                         + response.isSuccessful()
                         + "\n Message is::" + response.message().toString());
-                Toast.makeText(RetrofitOperationActivity.this, "Upload Success Status::"
+                Toast.makeText(MainActivity.this, "Upload Success Status::"
                         + response.isSuccessful(), Toast.LENGTH_SHORT).show();
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.setCancelable(true);

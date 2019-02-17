@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".retrofit.RetrofitOperationActivity"
+
+        <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +26,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".retrofit.ResponseActivity"
+        <activity android:name=".activity.ResultActivity"
             android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

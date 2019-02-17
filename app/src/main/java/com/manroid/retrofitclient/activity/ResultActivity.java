@@ -1,4 +1,4 @@
-package com.manroid.retrofitclient.retrofit;
+package com.manroid.retrofitclient.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.manroid.retrofitclient.R;
 
 
-public class ResponseActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity {
 
 
     private TextView mTxtResponse;

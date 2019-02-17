@@ -6,6 +6,7 @@ public class Constant {
     public static final String COUNTRY_URL = "https://restcountries.eu";
     public static final String GEONAMES_URL="http://api.geonames.org";
     public static final String FILEUPLOAD_URL="http://www.androidexample.com";
+    public static final String USER_URL="https://reqres.in";
 
 
 

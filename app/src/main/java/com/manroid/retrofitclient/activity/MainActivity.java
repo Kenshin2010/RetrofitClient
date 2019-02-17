@@ -10,15 +10,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.manroid.retrofitclient.R;
 import com.manroid.retrofitclient.constant.Constant;
-import com.manroid.retrofitclient.api.CountryApi;
+import com.manroid.retrofitclient.api.RequestApi;
 import com.manroid.retrofitclient.result.Country;
 import com.manroid.retrofitclient.result.CountryFromCode;
 import com.manroid.retrofitclient.result.GeoNames;
+import com.manroid.retrofitclient.result.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -38,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /***
      * Variable declaration part
      ***/
-    private Button mBtnGet, mBtnPost, mBtnMultipart,mBtnQuery;
+    private Button mBtnGet, mBtnPost, mBtnMultipart, mBtnQuery, mBtnPostJson;
     private Intent mIntent;
     private ProgressDialog mProgressDialog;
 
@@ -51,16 +58,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * @see
-     * */
+     */
     private void initViews() {
         mBtnGet = (Button) findViewById(R.id.btn_get);
         mBtnPost = (Button) findViewById(R.id.btn_post);
         mBtnMultipart = (Button) findViewById(R.id.btn_multipart);
-        mBtnQuery=(Button)findViewById(R.id.btn_query);
+        mBtnQuery = (Button) findViewById(R.id.btn_query);
+        mBtnPostJson = (Button) findViewById(R.id.btn_post_json);
         mBtnMultipart.setOnClickListener(this);
         mBtnPost.setOnClickListener(this);
         mBtnGet.setOnClickListener(this);
         mBtnQuery.setOnClickListener(this);
+        mBtnPostJson.setOnClickListener(this);
         mIntent = getIntent();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Please Wait....");
@@ -101,6 +110,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 getCountryFromCode("ind");
                 break;
+            case R.id.btn_post_json:
+                if (mProgressDialog != null && !mProgressDialog.isShowing()) {
+                    mProgressDialog.show();
+                    ;
+                }
+                createUser();
+                break;
             default:
                 break;
         }
@@ -108,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getCountryFromCode(String ind) {
 
-        Retrofit retrofit=getRetrofitBuilder(Constant.COUNTRY_URL);
-        CountryApi codeApi=retrofit.create(CountryApi.class);
+        Retrofit retrofit = getRetrofitBuilder(Constant.COUNTRY_URL);
+        RequestApi codeApi = retrofit.create(RequestApi.class);
 
-        Call<List<CountryFromCode>> call=codeApi.getTasks(ind);
+        Call<List<CountryFromCode>> call = codeApi.getTasks(ind);
         call.enqueue(new Callback<List<CountryFromCode>>() {
             @Override
             public void onResponse(Call<List<CountryFromCode>> call, Response<List<CountryFromCode>> response) {
@@ -120,14 +136,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mProgressDialog.dismiss();
                 }
 
-                Log.i("RetrofitActivity", "Response" + response.isSuccessful()+"\n size is::"+response.body().toString());
+                Log.i("RetrofitActivity", "Response" + response.isSuccessful() + "\n size is::" + response.body().toString());
 
-                for(int i=0;i<response.body().size();i++){
-                    Log.i("RetrofitActivity","Response Cname is::"+response.body().get(i).getName());
+                for (int i = 0; i < response.body().size(); i++) {
+                    Log.i("RetrofitActivity", "Response Cname is::" + response.body().get(i).getName());
 
-                    String value="CName:"+response.body().get(i).getName()
-                            +"\n Capital::"+response.body().get(i).getCapital()
-                            +"\n Region::"+response.body().get(i).getSubregion();
+                    String value = "CName:" + response.body().get(i).getName()
+                            + "\n Capital::" + response.body().get(i).getCapital()
+                            + "\n Region::" + response.body().get(i).getSubregion();
                     mIntent = new Intent(MainActivity.this, ResultActivity.class);
                     mIntent.putExtra("response", value);
                     startActivity(mIntent);
@@ -148,14 +164,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void createUser() {
+
+        Retrofit retrofit = getRetrofitBuilder(Constant.USER_URL);
+        RequestApi requestApi = retrofit.create(RequestApi.class);
+
+//        User user = new User();
+//        user.setName("dev_one");
+//        user.setJob("dev_mobi");
+
+//        String request = toJson(user);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("name","dev_one");
+        map.put("job","dev_mobi");
+
+//        String request = getParamsRequest(map);
+
+        Call<User> call = requestApi.createUserJson(map);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+
+                Log.d("MainActivity", response.toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("RetrofitActivity", "RetrofitActivity Error::" + t.getMessage());
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+                mIntent = new Intent(MainActivity.this, ResultActivity.class);
+                mIntent.putExtra("response", t.getMessage());
+                startActivity(mIntent);
+            }
+        });
+    }
+
 
     /**
      * @see Retrofit GET
      */
     private void getCountryDetails() {
         Retrofit retrofit = getRetrofitBuilder(Constant.COUNTRY_URL);
-        CountryApi countryApi = retrofit.create(CountryApi.class);
-        Call<List<Country>> call = countryApi.getCountry();
+        RequestApi requestApi = retrofit.create(RequestApi.class);
+        Call<List<Country>> call = requestApi.getCountry();
 
         call.enqueue(new Callback<List<Country>>() {
             @Override
@@ -193,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void getGeoNames() {
         Retrofit retrofit = getRetrofitBuilder(Constant.GEONAMES_URL);
-        CountryApi geoNameApi = retrofit.create(CountryApi.class);
+        RequestApi geoNameApi = retrofit.create(RequestApi.class);
         Call<GeoNames> call = geoNameApi.createUser("44.1", "-9.9", "-22.4", "55.2", "de", "demo");
         call.enqueue(new Callback<GeoNames>() {
             @Override
@@ -232,8 +291,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void uploadImage(File fileUri) {
         Retrofit retrofit = getRetrofitBuilder(Constant.FILEUPLOAD_URL);
-        CountryApi service =
-                retrofit.create(CountryApi.class);
+        RequestApi service =
+                retrofit.create(RequestApi.class);
         File file = new File(fileUri.getPath());
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -290,5 +349,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return retrofit;
     }
 
+
+    private <T> String toJson(T clazz){
+        Gson gson = new Gson();
+        String json = gson.toJson(clazz);
+        return json;
+    }
+
+    public String getParamsRequest(Map<String, String> paramsRequest) {
+        JSONObject params = new JSONObject();
+        try {
+            for (String key : paramsRequest.keySet())
+                params.put(key, paramsRequest.get(key));
+        } catch (JSONException e) {
+            return null;
+        }
+        return params.toString();
+    }
 
 }
